@@ -1,0 +1,26 @@
+[project]
+name = "repo-intelligence"
+version = "2.0.0"
+description = "AI-powered repository intelligence and best-practices analysis"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    # ── LLM & LangChain ──────────────────────────────────
+    "langchain>=1.2.10",
+    "langchain-core>=1.2.16",
+    "langchain-ollama>=1.0.1",
+    "langchain-community>=0.2.0",
+    "langchain-huggingface>=0.1.2",
+    "langgraph>=1.0.9",
+
+    # ── Vector store ──────────────────────────────────────
+    "faiss-cpu>=1.7.4",
+    "sentence-transformers>=2.2.2",
+
+    # ── API ───────────────────────────────────────────────
+    "fastapi>=0.115.0",
+    "uvicorn>=0.30.0",
+
+    # ── Utilities ─────────────────────────────────────────
+    "python-dotenv>=1.2.1",
+]
