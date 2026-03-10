@@ -2,7 +2,7 @@
 
 An AI-powered, modular system that deeply analyzes source code repositories to extract business context, detect architectural patterns, map dependencies, and evaluate against industry best practices.
 
-Built with **Python**, **LangGraph**, **LangChain**, and **Ollama** (Local LLMs).
+Built with **Python**, **LangGraph**, **LangChain**, and **Ollama** (Local LLMs) / **HuggingFace** (Cloud LLMs).
 
 ---
 
@@ -45,10 +45,21 @@ Ensure you have [uv](https://github.com/astral-sh/uv) installed to manage the Py
    uv sync
    ```
 
-3. **Install Ollama:**
+3. **Configure LLM Provider:**
+   By default, the system uses a local Ollama server.
+   
+   **Option A: Local Ollama (Default)**
    Ensure you have [Ollama](https://ollama.com/) running locally. The system defaults to using the `qwen3:4b` model. Pull the model before running:
    ```bash
    ollama run qwen3:4b
+   ```
+
+   **Option B: HuggingFace Inference API (Cloud)**
+   To use HuggingFace serverless endpoints, create a `.env` file in the root directory and add:
+   ```env
+   LOCAL_MODEL=False
+   HF_TOKEN=your_huggingface_api_token
+   RI_HF_MODEL=HuggingFaceH4/zephyr-7b-beta
    ```
 
 ---
@@ -96,6 +107,9 @@ curl -X POST http://127.0.0.1:8000/analyze-repo \
 Tuning parameters are centralized within `config/settings.py`. You can override core variables securely via the environment or modify the thresholds inside the file directly:
 
 *   **`RI_LLM_MODEL`**: Override local Ollama model (Default: `qwen3:4b`)
+*   **`LOCAL_MODEL`**: Set to `False` to use HuggingFace instead of Ollama
+*   **`HF_TOKEN`**: HuggingFace API token (required if `LOCAL_MODEL=False`)
+*   **`RI_HF_MODEL`**: Override HuggingFace model (Default: `HuggingFaceH4/zephyr-7b-beta`)
 *   **`RI_MAX_FILES`**: Set repo scan threshold limit (Default: 2000 files)
 *   **`RI_CHUNK_SIZE`**: Sets embedding search chunk limitations (Default: 1500 chars)
 
