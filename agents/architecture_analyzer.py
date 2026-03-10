@@ -13,6 +13,7 @@ import os
 from typing import Any, Dict, List
 
 from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.output_parsers import StrOutputParser
 
 from config.settings import ScanSettings, load_settings
 
@@ -165,7 +166,7 @@ def architecture_analyzer_agent(llm: Any, state: Dict[str, Any]) -> Dict[str, An
     metrics = _compute_complexity_metrics(repo_path)
     dependencies = state.get("dependencies", {})
 
-    chain = _PROMPT | llm
+    chain = _PROMPT | llm | StrOutputParser()
     raw = chain.invoke({
         "repo_tree": state.get("repo_tree", "")[:4000],
         "tech_stack": state.get("tech_stack", "unknown"),

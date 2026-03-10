@@ -12,6 +12,7 @@ import logging
 from typing import Any, Dict
 
 from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.output_parsers import StrOutputParser
 
 logger = logging.getLogger(__name__)
 
@@ -72,7 +73,7 @@ def entity_extractor_agent(llm: Any, state: Dict[str, Any]) -> Dict[str, Any]:
     if not code_evidence.strip():
         code_evidence = "No code evidence available."
 
-    chain = _PROMPT | llm
+    chain = _PROMPT | llm | StrOutputParser()
     raw = chain.invoke({
         "tech_stack": state.get("tech_stack", "unknown"),
         "code_evidence": code_evidence[:8000],  # Limit context size

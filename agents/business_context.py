@@ -13,6 +13,7 @@ import logging
 from typing import Any, Dict
 
 from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.output_parsers import StrOutputParser
 
 logger = logging.getLogger(__name__)
 
@@ -79,7 +80,7 @@ def business_context_agent(llm: Any, state: Dict[str, Any]) -> Dict[str, Any]:
     entities = state.get("entities", {})
     workflows = state.get("workflows", {})
 
-    chain = _PROMPT | llm
+    chain = _PROMPT | llm | StrOutputParser()
     raw = chain.invoke({
         "tech_stack": state.get("tech_stack", "unknown"),
         "key_files": state.get("key_files", "")[:6000],

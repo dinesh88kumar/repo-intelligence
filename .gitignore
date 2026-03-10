@@ -82,3 +82,10 @@ report.md
 
 # Package managers
 uv.lock
+
+
+output.txt
+test_output.txt
+test_output2.txt
+out2.txt
+out.txt

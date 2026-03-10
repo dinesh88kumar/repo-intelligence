@@ -10,6 +10,7 @@ import logging
 from typing import Any, Dict, List
 
 from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.output_parsers import StrOutputParser
 
 from analysis.best_practices import Finding, Severity, evaluate_rules
 
@@ -144,7 +145,7 @@ def gap_analyzer_agent(llm: Any, state: Dict[str, Any]) -> Dict[str, Any]:
 
     # LLM-based synthesis
     architecture = state.get("architecture", {})
-    chain = _PROMPT | llm
+    chain = _PROMPT | llm | StrOutputParser()
     raw = chain.invoke({
         "findings_text": findings_text,
         "tech_stack": tech_stack,

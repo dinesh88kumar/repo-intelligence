@@ -11,6 +11,7 @@ import logging
 from typing import Any, Dict
 
 from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.output_parsers import StrOutputParser
 
 from tools.dependency_mapper import analyse_dependencies
 from tools.repo_reader import scan_repository
@@ -58,7 +59,7 @@ def repo_scanner_agent(llm: Any, state: Dict[str, Any]) -> Dict[str, Any]:
     logger.info("Repo scanned: %d evidence files found", len(evidence))
 
     # Detect tech stack via LLM
-    chain = _PROMPT | llm
+    chain = _PROMPT | llm | StrOutputParser()
     tech_stack = chain.invoke({
         "tree": tree[:5000],
         "key_files": key_files[:6000],

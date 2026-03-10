@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Repo Intelligence — AI Repository Analysis</title>
+  <meta name="description"
+    content="Analyze any public GitHub repository with AI. Get architecture diagrams, maturity scores, and actionable insights.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400&family=Fraunces:wght@300;400;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet">
+
+  <!-- Marked.js for markdown -->
+  <script src="https://cdn.jsdelivr.net/npm/marked@9.1.6/marked.min.js"></script>
+  <!-- Mermaid.js for diagrams -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <!-- highlight.js for code -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+
+<body>
+  <div class="bg-grid"></div>
+
+  <header>
+    <div class="logo">
+      <div class="logo-icon">⬡</div>
+      <div>
+        <div class="logo-text">RepoIntel</div>
+        <div class="logo-sub">AI Repository Analysis</div>
+      </div>
+    </div>
+    <div class="header-sep"></div>
+    <button class="nav-pill active" onclick="showSection('analyze', this)">Analyze</button>
+    <button class="nav-pill" onclick="showSection('results', this)" id="nav-results"
+      style="display:none">Results</button>
+  </header>
+
+  <div class="container">
+
+    <!-- ── HERO ── -->
+    <section class="hero" id="hero-section">
+      <h1>Analyze Any GitHub Repository</h1>
+      <p>Paste a public GitHub URL and get a comprehensive AI-powered intelligence report with architecture diagrams,
+        maturity assessment, and actionable insights.</p>
+    </section>
+
+    <!-- ── INPUT ── -->
+    <section class="input-card" id="input-section">
+      <div class="input-row">
+        <div class="input-wrap">
+          <span class="input-icon">🔗</span>
+          <input type="url" id="github-url" placeholder="https://github.com/owner/repository" autocomplete="off"
+            spellcheck="false">
+        </div>
+        <button class="btn-analyze" id="analyze-btn" onclick="startAnalysis()">
+          <span>🧠</span> Analyze
+        </button>
+      </div>
+      <div class="input-hint">Supports any public GitHub repository · Analysis takes 2–5 minutes depending on repo size
+      </div>
+      <div class="error-msg" id="error-msg"></div>
+    </section>
+
+    <!-- ── PROGRESS ── -->
+    <section class="progress-section" id="progress-section">
+      <div class="progress-card">
+        <div class="progress-header">
+          <span class="progress-title">🔍 Analyzing Repository...</span>
+          <span class="progress-pct" id="progress-pct">0%</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="progress-fill"></div>
+        </div>
+        <div class="step-list" id="step-list"></div>
+      </div>
+    </section>
+
+    <!-- ── RESULTS ── -->
+    <section class="results-section" id="results-section">
+      <div class="results-header">
+        <h2 class="results-title" id="results-title">📊 Analysis Report</h2>
+        <div class="download-bar">
+          <button class="btn-download" onclick="downloadReport('md')">📝 Markdown</button>
+          <button class="btn-download" onclick="downloadReport('html')">🌐 HTML</button>
+          <button class="btn-download" onclick="downloadReport('pdf')">📕 PDF</button>
+        </div>
+      </div>
+
+      <!-- Stats overview -->
+      <div class="stats-grid" id="stats-grid"></div>
+
+      <!-- Tabs -->
+      <div class="tab-bar" id="result-tabs">
+        <button class="tab-btn active" onclick="switchTab('report', this)">📄 Full Report</button>
+        <button class="tab-btn" onclick="switchTab('architecture', this)">🏗️ Architecture</button>
+        <button class="tab-btn" onclick="switchTab('entities', this)">🏷️ Entities</button>
+        <button class="tab-btn" onclick="switchTab('risks', this)">🔥 Risks</button>
+      </div>
+
+      <!-- Report content -->
+      <div class="report-panel" id="report-panel">
+        <div class="md-content" id="report-content"></div>
+      </div>
+    </section>
+
+  </div>
+
+  <footer>
+    <p>Repo Intelligence v2.0 · Powered by LangGraph + Ollama · Built with ❤️</p>
+  </footer>
+
+  <script src="/static/app.js"></script>
+</body>
+
+</html>

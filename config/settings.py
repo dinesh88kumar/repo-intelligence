@@ -2,6 +2,7 @@
 Centralized configuration for the Repository Intelligence System.
 
 All tunable parameters live here so nothing is hardcoded across the codebase.
+Supports LOCAL_MODEL=True (Ollama) or LOCAL_MODEL=False (HuggingFace Inference API).
 """
 
 from __future__ import annotations
@@ -9,6 +10,11 @@ from __future__ import annotations
 import os
 from dataclasses import dataclass, field
 from typing import List
+
+from dotenv import load_dotenv
+
+# Load .env file
+load_dotenv()
 
 
 @dataclass(frozen=True)
@@ -78,33 +84,10 @@ class SemanticSearchSettings:
     code_extensions: frozenset[str] = field(
         default_factory=lambda: frozenset(
             {
-                ".py",
-                ".js",
-                ".ts",
-                ".jsx",
-                ".tsx",
-                ".java",
-                ".go",
-                ".rs",
-                ".rb",
-                ".php",
-                ".cs",
-                ".kt",
-                ".scala",
-                ".swift",
-                ".c",
-                ".cpp",
-                ".h",
-                ".hpp",
-                ".yaml",
-                ".yml",
-                ".json",
-                ".toml",
-                ".xml",
-                ".sql",
-                ".graphql",
-                ".proto",
-                ".md",
+                ".py", ".js", ".ts", ".jsx", ".tsx", ".java", ".go",
+                ".rs", ".rb", ".php", ".cs", ".kt", ".scala", ".swift",
+                ".c", ".cpp", ".h", ".hpp", ".yaml", ".yml", ".json",
+                ".toml", ".xml", ".sql", ".graphql", ".proto", ".md",
             }
         )
     )
@@ -115,9 +98,12 @@ class LLMSettings:
     """Controls LLM behaviour."""
 
     model_name: str = "qwen3:4b"
+    hf_model_name: str = "HuggingFaceH4/zephyr-7b-beta"
     temperature: float = 0.1
     max_retries: int = 2
     request_timeout: int = 120
+    local_model: bool = True
+    hf_token: str = ""
 
 
 @dataclass(frozen=True)
@@ -151,12 +137,24 @@ def load_settings() -> Settings:
     """Load settings, optionally overriding from environment variables."""
 
     llm_model = os.getenv("RI_LLM_MODEL", "qwen3:4b")
+    hf_model = os.getenv("RI_HF_MODEL", "HuggingFaceH4/zephyr-7b-beta")
     max_files = int(os.getenv("RI_MAX_FILES", "2000"))
     chunk_size = int(os.getenv("RI_CHUNK_SIZE", "1500"))
     top_k = int(os.getenv("RI_TOP_K", "10"))
 
+    # LOCAL_MODEL: "False" means use HuggingFace API
+    local_model_str = os.getenv("LOCAL_MODEL", "True")
+    local_model = local_model_str.lower() not in ("false", "0", "no")
+
+    hf_token = os.getenv("HF_TOKEN", "")
+
     return Settings(
         scan=ScanSettings(max_files=max_files),
         search=SemanticSearchSettings(chunk_size=chunk_size, top_k=top_k),
-        llm=LLMSettings(model_name=llm_model),
+        llm=LLMSettings(
+            model_name=llm_model,
+            hf_model_name=hf_model,
+            local_model=local_model,
+            hf_token=hf_token,
+        ),
     )

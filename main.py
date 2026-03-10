@@ -145,10 +145,10 @@ def main() -> None:
 
     # Load config
     settings = load_settings()
-    model_name = args.model or settings.llm.model_name
 
-    # Build pipeline
-    llm = OllamaLLM(model=model_name)
+    # Build pipeline using the LLM factory (respects LOCAL_MODEL env var)
+    from config.llm_factory import create_llm
+    llm = create_llm(settings, model_override=args.model)
     app = build_graph(llm)
 
     # Execute

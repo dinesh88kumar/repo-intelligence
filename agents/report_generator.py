@@ -140,6 +140,35 @@ def report_generator_agent(state: Dict[str, Any]) -> Dict[str, Any]:
     if layers:
         sections.append(f"\n**Layers:** {' → '.join(layers)}")
 
+        # ── Mermaid: Architecture Layers ──
+        mermaid_lines = ["```mermaid", "graph TB"]
+        for i, layer in enumerate(layers):
+            safe = layer.replace('"', "'").replace("[", "(").replace("]", ")")
+            mermaid_lines.append(f'  L{i}["{safe}"]')
+            if i > 0:
+                mermaid_lines.append(f"  L{i-1} --> L{i}")
+        mermaid_lines.append("```")
+        sections.append("\n" + "\n".join(mermaid_lines))
+
+    # ── Mermaid: Module Dependency Graph ──
+    module_graph = dependencies.get("module_graph", {})
+    if module_graph:
+        mermaid_lines = ["```mermaid", "graph LR"]
+        edge_count = 0
+        for mod, targets in module_graph.items():
+            src = mod.replace(".", "_").replace("/", "_").replace("-", "_")[:20]
+            for t in (targets or [])[:4]:
+                tgt = t.replace(".", "_").replace("/", "_").replace("-", "_")[:20]
+                mermaid_lines.append(f"  {src} --> {tgt}")
+                edge_count += 1
+                if edge_count >= 30:
+                    break
+            if edge_count >= 30:
+                break
+        mermaid_lines.append("```")
+        sections.append("\n### Module Dependencies\n")
+        sections.append("\n".join(mermaid_lines))
+
     # Complexity metrics
     sections.append("\n---\n## 📊 Complexity Metrics\n")
     sections.append(f"| Metric | Value |")
@@ -175,6 +204,15 @@ def report_generator_agent(state: Dict[str, Any]) -> Dict[str, Any]:
     if flows:
         sections.append("**User Flows:**")
         sections.append(_format_list(flows))
+        # ── Mermaid: User Flow Diagram ──
+        mermaid_lines = ["```mermaid", "graph TD"]
+        for i, flow in enumerate(flows[:8]):
+            safe = flow.replace('"', "'").replace("[", "(").replace("]", ")")[:50]
+            mermaid_lines.append(f'  F{i}["{safe}"]')
+            if i > 0:
+                mermaid_lines.append(f"  F{i-1} --> F{i}")
+        mermaid_lines.append("```")
+        sections.append("\n" + "\n".join(mermaid_lines))
     if req_paths:
         sections.append("\n**Request Paths:**")
         sections.append(_format_list(req_paths))
