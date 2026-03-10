@@ -4,6 +4,8 @@ An AI-powered, modular system that deeply analyzes source code repositories to e
 
 Built with **Python**, **LangGraph**, **LangChain**, and **Ollama** (Local LLMs) / **HuggingFace** (Cloud LLMs).
 
+<img width="1184" height="895" alt="image" src="https://github.com/user-attachments/assets/dc56f06c-6fe3-4044-b80e-f92e87ba4e86" />
+
 ---
 
 ## 🌟 Features
